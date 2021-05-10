@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/React-weather/static/css/main.9d5b29c0.chunk.css",
-    "main.js": "/React-weather/static/js/main.f2856eaf.chunk.js",
-    "main.js.map": "/React-weather/static/js/main.f2856eaf.chunk.js.map",
-    "runtime-main.js": "/React-weather/static/js/runtime-main.66f14f8d.js",
-    "runtime-main.js.map": "/React-weather/static/js/runtime-main.66f14f8d.js.map",
-    "static/js/2.d1d4273a.chunk.js": "/React-weather/static/js/2.d1d4273a.chunk.js",
-    "static/js/2.d1d4273a.chunk.js.map": "/React-weather/static/js/2.d1d4273a.chunk.js.map",
-    "static/js/3.4b0a37c4.chunk.js": "/React-weather/static/js/3.4b0a37c4.chunk.js",
-    "static/js/3.4b0a37c4.chunk.js.map": "/React-weather/static/js/3.4b0a37c4.chunk.js.map",
+    "main.js": "/React-weather/static/js/main.769615b8.chunk.js",
+    "main.js.map": "/React-weather/static/js/main.769615b8.chunk.js.map",
+    "runtime-main.js": "/React-weather/static/js/runtime-main.720e2aac.js",
+    "runtime-main.js.map": "/React-weather/static/js/runtime-main.720e2aac.js.map",
+    "static/js/2.8436dc9d.chunk.js": "/React-weather/static/js/2.8436dc9d.chunk.js",
+    "static/js/2.8436dc9d.chunk.js.map": "/React-weather/static/js/2.8436dc9d.chunk.js.map",
+    "static/js/3.b634cba6.chunk.js": "/React-weather/static/js/3.b634cba6.chunk.js",
+    "static/js/3.b634cba6.chunk.js.map": "/React-weather/static/js/3.b634cba6.chunk.js.map",
     "index.html": "/React-weather/index.html",
     "static/css/main.9d5b29c0.chunk.css.map": "/React-weather/static/css/main.9d5b29c0.chunk.css.map",
-    "static/js/2.d1d4273a.chunk.js.LICENSE.txt": "/React-weather/static/js/2.d1d4273a.chunk.js.LICENSE.txt",
+    "static/js/2.8436dc9d.chunk.js.LICENSE.txt": "/React-weather/static/js/2.8436dc9d.chunk.js.LICENSE.txt",
     "static/media/airFlow.93b49bb5.svg": "/React-weather/static/media/airFlow.93b49bb5.svg",
     "static/media/day-clear.8857a9c1.svg": "/React-weather/static/media/day-clear.8857a9c1.svg",
     "static/media/day-cloudy-fog.0ed432d9.svg": "/React-weather/static/media/day-cloudy-fog.0ed432d9.svg",
@@ -32,9 +32,9 @@
     "static/media/refresh.e352fc8b.svg": "/React-weather/static/media/refresh.e352fc8b.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.66f14f8d.js",
-    "static/js/2.d1d4273a.chunk.js",
+    "static/js/runtime-main.720e2aac.js",
+    "static/js/2.8436dc9d.chunk.js",
     "static/css/main.9d5b29c0.chunk.css",
-    "static/js/main.f2856eaf.chunk.js"
+    "static/js/main.769615b8.chunk.js"
   ]
 }
