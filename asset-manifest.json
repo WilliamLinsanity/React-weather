@@ -1,16 +1,17 @@
 {
   "files": {
     "main.css": "/React-weather/static/css/main.0c24a71e.chunk.css",
-    "main.js": "/React-weather/static/js/main.e688c4ed.chunk.js",
-    "main.js.map": "/React-weather/static/js/main.e688c4ed.chunk.js.map",
+    "main.js": "/React-weather/static/js/main.99a411b5.chunk.js",
+    "main.js.map": "/React-weather/static/js/main.99a411b5.chunk.js.map",
     "runtime-main.js": "/React-weather/static/js/runtime-main.0c512db0.js",
     "runtime-main.js.map": "/React-weather/static/js/runtime-main.0c512db0.js.map",
-    "static/js/2.62330050.chunk.js": "/React-weather/static/js/2.62330050.chunk.js",
-    "static/js/2.62330050.chunk.js.map": "/React-weather/static/js/2.62330050.chunk.js.map",
+    "static/js/2.38f4f1b0.chunk.js": "/React-weather/static/js/2.38f4f1b0.chunk.js",
+    "static/js/2.38f4f1b0.chunk.js.map": "/React-weather/static/js/2.38f4f1b0.chunk.js.map",
     "index.html": "/React-weather/index.html",
     "static/css/main.0c24a71e.chunk.css.map": "/React-weather/static/css/main.0c24a71e.chunk.css.map",
-    "static/js/2.62330050.chunk.js.LICENSE.txt": "/React-weather/static/js/2.62330050.chunk.js.LICENSE.txt",
+    "static/js/2.38f4f1b0.chunk.js.LICENSE.txt": "/React-weather/static/js/2.38f4f1b0.chunk.js.LICENSE.txt",
     "static/media/airFlow.93b49bb5.svg": "/React-weather/static/media/airFlow.93b49bb5.svg",
+    "static/media/cog.64eda1d3.svg": "/React-weather/static/media/cog.64eda1d3.svg",
     "static/media/day-clear.8857a9c1.svg": "/React-weather/static/media/day-clear.8857a9c1.svg",
     "static/media/day-cloudy-fog.0ed432d9.svg": "/React-weather/static/media/day-cloudy-fog.0ed432d9.svg",
     "static/media/day-cloudy.005047ee.svg": "/React-weather/static/media/day-cloudy.005047ee.svg",
@@ -31,8 +32,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.0c512db0.js",
-    "static/js/2.62330050.chunk.js",
+    "static/js/2.38f4f1b0.chunk.js",
     "static/css/main.0c24a71e.chunk.css",
-    "static/js/main.e688c4ed.chunk.js"
+    "static/js/main.99a411b5.chunk.js"
   ]
 }
