@@ -16,7 +16,7 @@ import { ReactComponent as NightPartiallyClearWithRain } from "./images/night-pa
 import { ReactComponent as NightSnowing } from "./images/night-snowing.svg";
 
 const IconContainer = styled.div`
-  background-color: #b68ae9;
+flex-basis: 30%;
 `;
 // 與中央氣象局的代號做對比
 const weatherTypes = {

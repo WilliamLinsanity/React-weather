@@ -1,269 +1,146 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import styled from "@emotion/styled";
-import WeatherIcon from "./WeatherIcon";
-import { ReactComponent as FlowIcon } from "./images/airFlow.svg";
-import { ReactComponent as RainIcon } from "./images/rain.svg";
-import { ReactComponent as RefreshIcon } from './images/refresh.svg';
-import { ReactComponent as LoadingIcon } from "./images/loading.svg";
+import { ThemeProvider } from '@emotion/react';
+import WeatherCard from "./WeatherCard";
+import useWeatherApi from './useWeatherApi'
+import WeatherSetting from "./WeatherSetting";
+import { findLocation } from './utils';
+import dayjs from 'dayjs';
+
+const theme ={
+  light: {
+    backgroundColor: '#ededed',
+    foregroundColor: '#f9f9f9',
+    boxShadow: '0 1px 3px 0 #999999',
+    titleColor: '#212121',
+    temperatureColor: '#757575',
+    textColor: '#828282',
+  },
+  dark: {
+    backgroundColor: '#1F2022',
+    foregroundColor: '#121416',
+    boxShadow:
+      '0 1px 4px 0 rgba(12, 12, 13, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.15)',
+    titleColor: '#f9f9fa',
+    temperatureColor: '#dddddd',
+    textColor: '#cccccc',
+  },
+}
 
 const Container = styled.div`
-  background: #ededed;
+  background-color: ${({theme}) => theme.backgroundColor};
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-const WeatherCard = styled.div`
-  position: relative;
-  min-width: 360px;
-  box-shadow: 0 1px 3px 0 #999999;
-  background-color: #f9f9f9;
-  box-sizing: border-box;
-  /* padding: 30px 15px; */
-`;
+const sunUrl = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/A-B0062-001?Authorization=CWB-88D06302-5081-4A40-BD5D-2CCD4CDBEDF4';
 
-const Location = styled.div`
-  text-align: center;
-  font-size: 30px;
-  padding: 5px 0;
-  color: #3c3838;
-  background-color: #5e5e5e;
-  width: 100%;
-`;
-const Description = styled.div`
-  font-size: 20px;
-  padding: 0 0 0 5px;
-  color: #d36868;
-  background-color: #dfa9a9;
-`;
 
-const Content = styled.div`
-  background-color: #a6c1dd;
-  display: flex;
-  padding: 0 10px;
-`;
-const Temperature = styled.div`
-  background-color: #c7ec9b;
-  display: flex;
-  align-items: center;
-  justify-items: space-between;
-`;
-const TemperatureNumber = styled.div`
-  font-size: 50px;
-`;
-const TemperatureStanard = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
+const getMoment = (locationName) =>{ 
+     return fetch(sunUrl).then(res=>res.json())
+      .then(data=>{
+          const location = data.records.locations.location.find(
+            (data) => data.locationName === locationName
+          );
 
-const AirFlow = styled.div`
-  background-color: #e8b182;
-  font-size: 20px;
-`;
+          if (!location) return null;
+      // 取得當前時間
+      const now = dayjs();
+      // 今天日期
+      const nowDate = Intl.DateTimeFormat('zh-TW', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+      })
+          .format(now)
+          .replace(/\//g, '-');
 
-const Flow = styled(FlowIcon)`
-  width: 20px;
-  height: 20px;
-`;
+      let sunriseAndSunsetData = location.time.filter((item)=>{
+          if(dayjs(item.dataTime).unix() >= dayjs(nowDate).unix()){
+              return item
+          }
+          return false
+      })    
 
-const Rain = styled.div`
-  background-color: #82e8e4;
-  font-size: 20px;
-`;
-const RNIcon = styled(RainIcon)`
-  width: 20px;
-  height: 20px;
-`;
-const LastRecord = styled.div`
-  text-align: right;
-  display: flex;
-  height:100%;
-  justify-content: flex-end;
-  align-items: center;
-  font-size: 20px;
-  background-color: #9b82e8;
-
-  svg{
-    margin-left: 10px;
-    width: 15px;
-    height: 15px;
-    cursor: pointer;
-    animation: rotate infinite 1.5s linear;
-    animation-duration: ${({isLoading}) =>(isLoading ? '1.5s' : '0s')};
+      sunriseAndSunsetData = Object.values(sunriseAndSunsetData).map(data=>({
+          ...data,
+          sunrise: Object.values(data.parameter).filter(item=> item.parameterName === '日出時刻')[0],
+          sunset: Object.values(data.parameter).filter(item=> item.parameterName === '日沒時刻')[0]
+      }))
     
-    @keyframes rotate {
-      from {
-        transform: rotate(360deg);
-      }
-      to {
-        transform: rotate(0deg);
-      }
-    }
-  }
-`;
-const weatherUrl =
-  "https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0003-001?Authorization=CWB-88D06302-5081-4A40-BD5D-2CCD4CDBEDF4&locationName=%E8%87%BA%E5%8C%97";
-const forecastUrl =
-  "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-88D06302-5081-4A40-BD5D-2CCD4CDBEDF4&locationName=%E8%87%BA%E5%8C%97%E5%B8%82";
-const sunUrl = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/A-B0062-001?Authorization=CWB-88D06302-5081-4A40-BD5D-2CCD4CDBEDF4&locationName=%E8%87%BA%E5%8C%97%E5%B8%82';
-const handleCurrentWather = () => {
-  return fetch(weatherUrl)
-    .then((res) => res.json())
-    .then((data) => {
-      const locactionData = data.records.location[0];
-      const weatherData = locactionData.weatherElement.reduce((acc, item) => {
-        if (["WDSD", "TEMP", "HUMD"].includes(item.elementName)) {
-          acc[item.elementName] = item.elementValue;
-        }
-        return acc;
-      });
-      return {
-        observationTime: locactionData.time.obsTime,
-        locationName: locactionData.locationName,
-        description: "多雲時晴",
-        temperature: weatherData.TEMP,
-        windSpeed: weatherData.WDSD,
-        humid: weatherData.HUMD
-      };
-    });
-};
-const handleForcastWather = () => {
-  return fetch(forecastUrl)
-    .then((res) => res.json())
-    .then((data) => {
-      const locationData = data.records.location[0];
-      const weatherData = {};
-      locationData.weatherElement.forEach((item, index) => {
-        if (["Wx", "PoP", "CI"].includes(item.elementName)) {
-          weatherData[`${item.elementName}`] = item.time[0].parameter;
-        }
-      });
-      return {
-        description: weatherData.Wx.parameterName,
-        weatherCode: weatherData.Wx.parameterValue,
-        rainPossibility: weatherData.PoP.parameterName,
-        comfortability: weatherData.CI.parameterName
-      };
-    });
-};
+      //找出今天日期
+      const todayDate = sunriseAndSunsetData.filter(item=>item.dataTime === nowDate )[0] || []       
+      
+      const sunriseTimestamp = dayjs(
+        `${todayDate.dataTime} ${todayDate.sunrise.parameterValue}`
+      ).unix();
 
-const handleSunRiseAndSunset = (observationTime) =>{
-  return fetch(sunUrl).then(res=>res.json())
-  .then(data=>{
-    const sunData = data.records.locations.location[0]  
-  // 取得當前時間
-  const now = new Date();
-  // 今天日期
-  const nowDate = Intl.DateTimeFormat('zh-TW', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-    .format(now)
-    .replace(/\//g, '-');
-  let sunRiseAndSunsetData = sunData.time.filter((item)=>{
-      if(new Date(item.dataTime).getTime() >= new Date(nowDate).getTime()){
-        return item
-      }
-  })
-  sunRiseAndSunsetData = Object.values(sunRiseAndSunsetData).map(data=>({
-      ...data,
-      sunRise: Object.values(data.parameter).filter(item=> item.parameterName === '日出時刻')[0],
-      sunSet: Object.values(data.parameter).filter(item=> item.parameterName === '日沒時刻')[0]
-  }))
-    //找出今天日期
-    const todayDate = sunRiseAndSunsetData.filter(item=>item.dataTime === nowDate )[0] || []       
-   return new Date(observationTime).getTime() >= new Date(`${todayDate.dataTime} ${todayDate.sunRise.parameterValue}`) 
-    &&  new Date(observationTime).getTime() <= new Date(`${todayDate.dataTime} ${todayDate.sunSet.parameterValue}`)
-       ?{moment:'day'}:{moment:'night'}
-    
+      const sunsetTimestamp = dayjs(
+        `${todayDate.dataTime} ${todayDate.sunset.parameterValue}`
+      ).unix();
+
+      const nowTimeStamp = now.unix();   
+        
+     return nowTimeStamp >= sunriseTimestamp 
+          && nowTimeStamp <= sunsetTimestamp 
+          ?'day':'night'
   })
 }
-
 const WeatherApp = () => {
-  const [weatherElements, setWeatherElements] = useState({
-    observationTime: new Date(),
-    locationName: "",
-    humid: 0,
-    temperature: 0,
-    windSpeed: 0,
-    description: "",
-    weatherCode: 0,
-    rainPossibility: 0,
-    comfortability: "",
-    moment:"",
-    isLoading:true,
-  });
-  const fetchingData = async () => {
-    console.log('123');
-    setWeatherElements(prevState =>({
-      ...prevState,
-      isLoading:true,
-    }))
-    const [currentWeather, forCastWeather,currentSunData] = await Promise.all([
-      handleCurrentWather(),
-      handleForcastWather(),
-      handleSunRiseAndSunset(weatherElements.observationTime)
-    ]);
-    setWeatherElements(() =>({
-      ...currentWeather,
-      ...forCastWeather,
-      ...currentSunData,
-      isLoading :false,
-    }));
-  };
-  const fetchData = useCallback(() => {
-    fetchingData();
-  }, []);
+  // 找尋現在使用者所設定的城市
+  const storageCity = localStorage.getItem('cityName');
+  const [ currentCity, setCurrentCity ] = useState(storageCity || '臺北市');
+  const currentLocation = findLocation(currentCity) || {};
 
-  // const moment = useMemo(()=>handleSunRiseAndSunset(weatherElements.observationTime)
-  // ,[weatherElements.observationTime,]);
-  // TODO 不知道為什麼moment回傳的值是那樣
-  // const moment = useMemo(() => handleSunRiseAndSunset(weatherElements.observationTime), [
-  //   weatherElements.observationTime,
-  // ]);
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const [ fetchData, weatherElements ]= useWeatherApi(currentLocation);
+  const [ currentTheme, setCurrentTheme ] = useState('light');
+  const [ currentPage, setCurrentPage ] = useState('WeatherCard');
+  const [momentElement, setMoment] = useState('')
+
+  //step1:在畫面渲染完之後去判斷現在是白天或晚上
+   useMemo(() => {
+    const fetchingData = async () => {
+      const [currentMoment] = await Promise.all([
+        getMoment(currentLocation.cityName),
+      ]);
+      setMoment(currentMoment);
+    }      
+    fetchingData()
+  },[currentLocation.cityName])
+
+    useEffect(() => {
+      localStorage.setItem('cityName', currentCity);
+    }, [currentCity]);
+    
+  // step2:讓theme知道現在要採用哪種樣式
+  useEffect(() =>{   
+    setCurrentTheme(momentElement === 'day'? 'light' : 'dark');
+  },[momentElement]); 
 
   return (
-    <Container>
-      {console.log('render, isLoading: ', weatherElements.isLoading)}
-      <WeatherCard>
-        <Location>{weatherElements.locationName}</Location>
-        <Description>{weatherElements.description}</Description>
-        <Content>
-          <Temperature>
-            <TemperatureNumber>
-              {Math.round(weatherElements.temperature)}
-            </TemperatureNumber>
-            <TemperatureStanard>°C</TemperatureStanard>
-            <WeatherIcon
-              currentWeatherCode={weatherElements.weatherCode}
-              moment={weatherElements.moment || 'day'}
-            />
-          </Temperature>
-        </Content>
-        <AirFlow>
-          <Flow />
-          {weatherElements.windSpeed}m/h
-        </AirFlow>
-        <Rain>
-          <RNIcon />
-          {weatherElements.rainPossibility}%
-        </Rain>
-        <LastRecord onClick={fetchingData} isLoading={weatherElements.isLoading}>
-          最後觀測時間:
-          {new Intl.DateTimeFormat("zh-TW", {
-            hour: "numeric",
-            minute: "numeric"
-          }).format(new Date(weatherElements.observationTime))}{" "}
-         {(weatherElements.isLoading? <LoadingIcon/> : <RefreshIcon/>)}
-        </LastRecord>
-      </WeatherCard>
-    </Container>
+    <ThemeProvider theme={theme[currentTheme]}>
+      <Container>
+        {currentPage === 'WeatherCard' && (
+          <WeatherCard 
+          weatherElements={weatherElements}
+          cityName={currentLocation.cityName}
+          //step3:塞入現在的moment
+          moment={momentElement}
+          fetchData={fetchData} 
+          setCurrentPage={setCurrentPage}
+          /> 
+        )}
+        {currentPage === 'WeatherSetting' && (
+          <WeatherSetting 
+          cityName={currentLocation.cityName}
+          setCurrentCity={setCurrentCity}
+          setCurrentPage={setCurrentPage}
+          />
+        )}
+      </Container>
+    </ThemeProvider>
   );
 };
 export default WeatherApp;
