@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled from "@emotion/styled";
 import { ReactComponent as DayThunderstorm } from "./images/day-thunderstorm.svg";
 import { ReactComponent as DayClear } from "./images/day-clear.svg";
@@ -16,7 +16,7 @@ import { ReactComponent as NightPartiallyClearWithRain } from "./images/night-pa
 import { ReactComponent as NightSnowing } from "./images/night-snowing.svg";
 
 const IconContainer = styled.div`
-flex-basis: 30%;
+  flex-basis: 30%;
 `;
 // 與中央氣象局的代號做對比
 const weatherTypes = {
@@ -25,24 +25,8 @@ const weatherTypes = {
   isCloudyFog: [25, 26, 27, 28],
   isCloudy: [2, 3, 4, 5, 6, 7],
   isFog: [24],
-  isPartiallyClearWithRain: [
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    19,
-    20,
-    29,
-    30,
-    31,
-    32,
-    38,
-    39
-  ],
-  isSnowing: [23, 37, 42]
+  isPartiallyClearWithRain: [8, 9, 10, 11, 12, 13, 14, 19, 20, 29, 30, 31, 32, 38, 39],
+  isSnowing: [23, 37, 42],
 };
 
 const weatherIcons = {
@@ -53,7 +37,7 @@ const weatherIcons = {
     isCloudy: <DayCloudy />,
     isFog: <DayFog />,
     isPartiallyClearWithRain: <DayPartiallyClearWithRain />,
-    isSnowing: <DaySnowing />
+    isSnowing: <DaySnowing />,
   },
   night: {
     isThunderstorm: <NightThunderstorm />,
@@ -62,16 +46,15 @@ const weatherIcons = {
     isCloudy: <NightCloudy />,
     isFog: <NightFog />,
     isPartiallyClearWithRain: <NightPartiallyClearWithRain />,
-    isSnowing: <NightSnowing />
-  }
+    isSnowing: <NightSnowing />,
+  },
 };
 // const Cloudy = styled(CloudyIcon)`
 //   flex-basis: 30%;
 // `;
 
 const weatherCode2Icon = (code) => {
-  const [type] =
-    Object.entries(weatherTypes).find(([type, codes]) => codes.includes(Number(code))) || [];
+  const [type] = Object.entries(weatherTypes).find(([type, codes]) => codes.includes(Number(code))) || [];
   return type;
 };
 const WeatherIcon = ({ currentWeatherCode, moment }) => {
